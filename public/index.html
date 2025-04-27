@@ -43,6 +43,7 @@
         </div>
     </center>
     <script>
+        const username = prompt("Enter a username");
         // Load messages every second
         setInterval(loadMessages, 1000);
 
@@ -52,7 +53,7 @@
             const message = encodeURIComponent(input.value.trim());
 
             if (message) {
-                await fetch(`/api/sendmsg?username=webui&message=${message}`)
+                await fetch(`/api/sendmsg?username=${username}&message=${message}`)
                     .then(() => {
                         input.value = ""; // Clear the input field
                         loadMessages();   // Reload messages after sending
@@ -89,7 +90,7 @@
         // Join the chat as 'webui' on first load
         async function joinChat() {
             try {
-                await fetch("/api/join?username=webui");
+                await fetch("/api/join?username=" + username);
             } catch (err) {
                 console.error("Error joining chat:", err);
             }
@@ -97,6 +98,7 @@
 
         // Call joinChat on page load (only once)
         window.onload = function() {
+
             joinChat();  // Join chat with the username 'webui'
             loadMessages(); // Load messages initially
         };
