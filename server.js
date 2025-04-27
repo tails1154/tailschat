@@ -25,6 +25,9 @@ app.get('/api/sendmsg', (req, res) => {
 
     if (joinedusers.includes(username)) {
         messages.push(`${username}: ${message}`);
+        if (message == "/clear") {
+            messages = [];
+        }
         res.status(200).send("SENDOK");
     } else {
         res.status(403).send("SENDFAILNOTEXIST");
