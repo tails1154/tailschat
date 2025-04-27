@@ -1,9 +1,19 @@
 const express = require('express');
 const app = express();
 const path = require('path');
+const crypto = require('crypto');
+
+
+const hash = crypto.createHash('sha256');
+
+
+
+// To change the set the ban command password, set the env variable banhashpasswd to your sha256 hashed password
 
 const messages = [];  // Global messages array
 const joinedusers = [];
+const bannedusers = [];
+
 
 app.get('/api/join', (req, res) => {
     const username = req.query.username;
@@ -26,10 +36,23 @@ app.get('/api/sendmsg', (req, res) => {
     const message = req.query.message;
 
     if (joinedusers.includes(username)) {
-        if (message === "/clear") {
+        if (bannedusers.includes(username)) {
+            return;
+        }
+        const messagearray = message.split(' ');
+        if (messagearray[0] === "/clear") {
             // Clear the global messages array
             messages.length = 0;  // This empties the array
             res.status(200).send("CLEAROK");
+        } else if (messagearray[0] === "/ban") {
+            if (crypto.createHash('sha256').update(messagearray[1]).digest('hex') == process.env.banhashpasswd) {
+                bannedusers.push(messagearray[2]);
+                console.log(messagearray[2] + " has been banned");
+                messages.push(messagearray[2] + " has been banned");
+            }
+            else {
+                messages.push("/ban: incorrect usage");
+            }
         } else {
             messages.push(`${username}: ${message}`);
             res.status(200).send("SENDOK");
