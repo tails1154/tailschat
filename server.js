@@ -53,6 +53,8 @@ app.get('/api/sendmsg', (req, res) => {
             else {
                 messages.push("/ban: incorrect usage");
             }
+        } else if (messagearray[0] == "/help") {
+            messages.push("/help: commands are: /ban /clear /help");
         } else {
             messages.push(`${username}: ${message}`);
             res.status(200).send("SENDOK");
