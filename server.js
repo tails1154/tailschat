@@ -54,7 +54,14 @@ app.get('/api/sendmsg', (req, res) => {
                 messages.push("/ban: incorrect usage");
             }
         } else if (messagearray[0] == "/help") {
-            messages.push("/help: commands are: /ban /clear /help");
+            messages.push("/help: commands are: /ban /clear /help /unban");
+        } else if (messagearray[0] == "/unban") {
+            if (crypto.createHash('sha256').update(messagearray[1]).digest('hex') == process.env.banhashpasswd) {
+                if (bannedusers.indexOf(messagearray[2]) !== -1) {
+                    bannedusers.splice(bannedusers.indexOf(messagearray[2]), 1);
+                    messages.push("unbanned " + messagearray[2]);
+                }
+            }
         } else {
             messages.push(`${username}: ${message}`);
             res.status(200).send("SENDOK");
