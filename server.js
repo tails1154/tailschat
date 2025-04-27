@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const path = require('path');
 
 const messages = [];
 const joinedusers = [];
@@ -15,7 +16,9 @@ app.get('/api/join', (req, res) => {
         res.status(400).send("JOINFAILNOUSERNAME");
     }
 });
-
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+})
 app.get('/api/sendmsg', (req, res) => {
     const username = req.query.username;
     const message = req.query.message;
