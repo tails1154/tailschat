@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const path = require('path');
 
-const messages = [];
+const messages = [];  // Global messages array
 const joinedusers = [];
 
 app.get('/api/join', (req, res) => {
@@ -16,19 +16,24 @@ app.get('/api/join', (req, res) => {
         res.status(400).send("JOINFAILNOUSERNAME");
     }
 });
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
-})
+});
+
 app.get('/api/sendmsg', (req, res) => {
     const username = req.query.username;
     const message = req.query.message;
 
     if (joinedusers.includes(username)) {
-        messages.push(`${username}: ${message}`);
-        if (message == "/clear") {
-            messages = [];
+        if (message === "/clear") {
+            // Clear the global messages array
+            messages.length = 0;  // This empties the array
+            res.status(200).send("CLEAROK");
+        } else {
+            messages.push(`${username}: ${message}`);
+            res.status(200).send("SENDOK");
         }
-        res.status(200).send("SENDOK");
     } else {
         res.status(403).send("SENDFAILNOTEXIST");
     }
